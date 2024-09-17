@@ -1,37 +1,39 @@
-import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom"; // Importa useNavigate
+import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 function Home() {
   const [books, setBooks] = useState([]);
   const navigate = useNavigate(); // Inicializa useNavigate
 
-  // Obtener los libros desde una API (puedes ajustar la URL a tu backend)
+  // Obtener los libros desde la API
   useEffect(() => {
     const fetchBooks = async () => {
       try {
-        const response = await fetch("http://localhost:5000/api/admin/books");
+        const response = await fetch('http://localhost:5000/api/books'); 
         const data = await response.json();
         setBooks(data);
       } catch (error) {
-        console.error("Error al obtener los libros:", error);
+        console.error('Error al obtener los libros:', error);
       }
     };
 
     fetchBooks();
   }, []);
 
+  // Funciones para manejar la navegación
   const handleRegisterClick = () => {
-    navigate("/register"); // Redirige a la página de registro
+    navigate('/register'); // Redirige a la página de registro
   };
 
   const handleLoginClick = () => {
-    navigate("/login"); // Redirige a la página de login
+    navigate('/login'); // Redirige a la página de login
   };
 
   return (
     <div className="container">
       <h1 className="mt-4">Lista de Libros</h1>
       <div className="mb-3">
+        {/* Botones de Login y Register */}
         <button className="btn btn-primary me-2" onClick={handleRegisterClick}>
           Register
         </button>

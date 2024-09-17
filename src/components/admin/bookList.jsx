@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 function BookList() {
     const [books, setBooks] = useState([]);
     const [error, setError] = useState(null);
+    const navigate = useNavigate();
 
     // Obtener el token del almacenamiento local
     const token = localStorage.getItem('token');
@@ -14,9 +15,10 @@ function BookList() {
             return;
         }
 
-        fetch('http://localhost:5000/api/admin/books', {
+        fetch('http://localhost:5000/api/books', {
             headers: {
-                'Authorization': `Bearer ${token}`
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
             }
         })
         .then((response) => {
@@ -38,7 +40,8 @@ function BookList() {
         fetch(`http://localhost:5000/api/admin/books/${id}`, {
             method: 'DELETE',
             headers: {
-                'Authorization': `Bearer ${token}`
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
             }
         })
         .then((response) => {
@@ -54,6 +57,12 @@ function BookList() {
         });
     };
 
+    // Definir la función handleLogout
+    const handleLogout = () => {
+        localStorage.removeItem('token');
+        navigate('/login'); // Redirige al usuario a la página de login u otra página adecuada
+    };
+
     // Verifica que `books` sea un array antes de usar `.map`
     if (!Array.isArray(books)) {
         return <div>Error: Datos no válidos.</div>;
@@ -63,6 +72,7 @@ function BookList() {
         <div className="container mt-5">
             <h2>Lista de Libros</h2>
             {error && <div className="alert alert-danger">{error}</div>}
+            <button onClick={handleLogout} className="btn btn-secondary mb-3">Cerrar Sesión</button>
             <Link to="/admin/books/new" className="btn btn-primary mb-3">Agregar Libro</Link>
             <table className="table">
                 <thead>

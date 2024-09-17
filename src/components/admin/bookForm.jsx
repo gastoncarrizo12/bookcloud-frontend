@@ -15,7 +15,6 @@ function BookForm() {
     const navigate = useNavigate();
     const { id } = useParams();
 
-    // Obtener el token del almacenamiento local
     const token = localStorage.getItem('token');
 
     useEffect(() => {
@@ -23,7 +22,8 @@ function BookForm() {
             setLoading(true);
             fetch(`http://localhost:5000/api/admin/books/${id}`, {
                 headers: {
-                    'Authorization': `Bearer ${token}`
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
                 }
             })
                 .then((response) => response.json())
@@ -61,6 +61,12 @@ function BookForm() {
             .catch((error) => setError('Error al guardar el libro'))
             .finally(() => setLoading(false));
     };
+
+    // Solo para depuración, eliminar cuando no sea necesario
+    useEffect(() => {
+        console.log('Token:', token);
+    }, [token]);
+
 
     return (
         <div className="container mt-5">
@@ -139,5 +145,6 @@ function BookForm() {
         </div>
     );
 }
+
 
 export default BookForm;

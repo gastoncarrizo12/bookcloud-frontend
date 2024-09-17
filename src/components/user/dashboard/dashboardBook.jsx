@@ -1,28 +1,69 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Card, Row, Col } from 'react-bootstrap';
 
 function DashboardBook() {
-    const books = [
-        { title: 'El Diario de Ana Frank', img: 'ana frank.jpg' },
-        { title: 'Los Juegos del Hambre', img: 'juegos del hambre.jpg' },
-        { title: 'El feminismo', img: 'feminismo.jpg' },
-        { title: 'Eva Peron', img: 'evaperon.jpg' },
-        // Puedes añadir más libros aquí
-    ];
+    const [books, setBooks] = useState([]);
+    const [error, setError] = useState(null);
+
+    // URL del endpoint del backend para obtener los libros
+    const API_URL = 'http://localhost:5000/api/books'; // Ajusta la URL según tu backend
+
+    useEffect(() => {
+        // Función para obtener los libros del backend
+        const fetchBooks = async () => {
+            try {
+                // Obtén el token desde el almacenamiento local (localStorage o sessionStorage)
+                const token = localStorage.getItem('token');
+
+                const response = await fetch(API_URL, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}` // Añadir el token JWT en los headers
+                    },
+                });
+
+                if (!response.ok) {
+                    throw new Error('Error fetching books');
+                }
+
+                const data = await response.json();
+                setBooks(data); // Asigna los datos de los libros al estado
+            } catch (error) {
+                console.error('Error fetching books:', error);
+                setError('Error al cargar los libros');
+            }
+        };
+
+        fetchBooks();
+    }, []); // El array vacío asegura que solo se ejecute una vez, al montar el componente
 
     return (
-        <Row>
-            {books.map((book, index) => (
-                <Col key={index} md={3} className="mb-4">
-                    <Card>
-                        <Card.Img variant="top" src={book.img} />
-                        <Card.Body>
-                            <Card.Title>{book.title}</Card.Title>
-                        </Card.Body>
-                    </Card>
-                </Col>
-            ))}
-        </Row>
+        <div className="container mt-5">
+            <h2>Lista de Libros</h2>
+            {error && <div className="alert alert-danger">{error}</div>}
+            <Row>
+                {books.length > 0 ? (
+                    books.map((book) => (
+                        <Col key={book._id} md={3} className="mb-4">
+                            <Card>
+                                <Card.Img variant="top" src={book.coverImage || 'default-image.jpg'} alt={book.title} />
+                                <Card.Body>
+                                    <Card.Title>{book.title}</Card.Title>
+                                    <Card.Text>
+                                        {book.author}
+                                    </Card.Text>
+                                </Card.Body>
+                            </Card>
+                        </Col>
+                    ))
+                ) : (
+                    <Col>
+                        <div className="alert alert-info">No hay libros disponibles</div>
+                    </Col>
+                )}
+            </Row>
+        </div>
     );
 }
 
