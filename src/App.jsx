@@ -4,7 +4,7 @@ import Register from './components/register';
 import Dashboard from './components/user/dashboard/dashboard';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import BookRoutes from './components/admin/bookRoutes'; // Importamos las rutas de libros para admin
-import Home from './components/home';
+import Home from './components/home/home';
 import DashboardAdmin from './components/admin/adminDashboard';
 
 function App() {

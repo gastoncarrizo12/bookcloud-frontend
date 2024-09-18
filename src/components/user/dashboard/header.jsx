@@ -11,8 +11,8 @@ function Header() {
                 <FormControl type="text" placeholder="Buscar libros..." className="mr-sm-2" />
                 <Button variant="outline-primary">Buscar</Button>
             </Form>
-            <div className="ml-3">
-                <Button variant="outline-secondary">
+            <div className="ml-3 d-flex align-items-center">
+                <Button variant="outline-secondary" className="mr-2">
                     <img src="/agregar-usuario.png" alt="usuario" width="30" height="30" />
                 </Button>
             </div>

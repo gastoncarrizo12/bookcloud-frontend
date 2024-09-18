@@ -1,15 +1,16 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom'; // Para la redirección
+import { useNavigate } from 'react-router-dom';
+import 'bootstrap-icons/font/bootstrap-icons.css'; // Importar Bootstrap Icons
 
 function Login() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
-    const navigate = useNavigate(); // Para redirigir al dashboard
+    const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setErrorMessage(''); // Limpiar mensaje de error
+        setErrorMessage('');
 
         if (!email || !password) {
             setErrorMessage('Todos los campos son obligatorios');
@@ -20,7 +21,6 @@ function Login() {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                
             },
             body: JSON.stringify({ email, password }),
         });
@@ -28,15 +28,13 @@ function Login() {
         const data = await res.json();
 
         if (res.ok) {
-              // Limpiar el almacenamiento local antes de guardar el nuevo token
-              localStorage.removeItem('token');
-              localStorage.setItem('token', data.token);
+            localStorage.removeItem('token');
+            localStorage.setItem('token', data.token);
 
-            // Verificar el rol para redirigir
             if (data.role === 'admin') {
-                navigate('/admin/dashboard'); // Redirigir al dashboard de admin
+                navigate('/admin/dashboard');
             } else {
-                navigate('/user/dashboard'); // Redirigir al dashboard de usuario
+                navigate('/user/dashboard');
             }
         } else {
             setErrorMessage(data.message || 'Error al iniciar sesión');
@@ -48,6 +46,15 @@ function Login() {
             <div className="row justify-content-center">
                 <div className="col-md-6">
                     <div className="card shadow-lg p-4">
+                        {/* Flecha para volver al inicio */}
+                        <div className="mb-3">
+                            <i 
+                                className="bi bi-arrow-left-circle-fill" 
+                                style={{ fontSize: '24px', cursor: 'pointer' }} 
+                                onClick={() => navigate('/')}
+                            ></i>
+                        </div>
+
                         <h2 className="text-center mb-4">Iniciar Sesión</h2>
 
                         {errorMessage && (
@@ -85,6 +92,19 @@ function Login() {
                                 Iniciar Sesión
                             </button>
                         </form>
+
+                        <hr />
+
+                        <div className="text-center mt-3">
+                            <p>¿No tienes cuenta? <span className="text-primary">Regístrate</span></p>
+                            <button
+                                className="btn btn-secondary w-100 mt-2"
+                                style={{ fontWeight: 'bold', fontSize: '16px' }}
+                                onClick={() => navigate('/register')}
+                            >
+                                Registrarse
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
